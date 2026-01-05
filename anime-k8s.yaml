@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rag-anime-engine
+  labels:
+    app: rag-anime-engine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rag-anime-engine
+  template:
+    metadata:
+      labels:
+        app: rag-anime-engine
+    spec:
+      containers:
+      - name: rag-anime-engine
+        image: rag-anime-engine:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8501
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rag-anime-engine-service
+spec:
+  type: ClusterIP
+  selector:
+    app: rag-anime-engine
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8501
